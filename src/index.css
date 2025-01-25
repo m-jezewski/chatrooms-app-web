@@ -58,6 +58,24 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotationBack {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -69,4 +87,9 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.landingBg{
+  position: absolute;
+
 }

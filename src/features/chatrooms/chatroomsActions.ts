@@ -59,7 +59,7 @@ export const getChatroomByIdAction = createAsyncThunk(
 export const updateChatroomDataAction = createAsyncThunk(
     'textChannels/update',
     async (
-        channelData: { id: number, name: string; }, {
+        channelData: { id: number, name: string, users: number[] , }, {
             dispatch,
             rejectWithValue
         }) => {
@@ -67,7 +67,7 @@ export const updateChatroomDataAction = createAsyncThunk(
             const {id} = channelData
             return await apiRequest({
                 endpoint: `/textChannels/${id}`,
-                method: 'PATCH',
+                method: 'PUT',
                 dispatch: dispatch,
                 body: channelData,
             });

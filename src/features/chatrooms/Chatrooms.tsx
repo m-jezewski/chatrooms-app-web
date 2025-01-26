@@ -1,21 +1,24 @@
-import {useParams} from "react-router";
-import {TextInput} from "../../shared/TextInput.tsx";
+import {useNavigate, useParams} from "react-router";
 import React, {useEffect, useState} from "react";
-import {Formik} from "formik";
 import {MessageForm} from "../messages/MessageForm.tsx";
 import {AppButton} from "../../shared/AppButton.tsx";
 import {useDispatch} from "react-redux";
 import {AppDispatch} from "../../store.ts";
-import {getChatroomByIdAction} from "./chatroomsActions.ts";
-import {Chatroom} from "../../interfaces.ts";
+import {deleteChatroomAction, getChatroomByIdAction, listChatroomsAction} from "./chatroomsActions.ts";
+import {User} from "../../interfaces.ts";
+import {ChatroomFormModal} from "./ChatroomFormModal.tsx";
+import toast from "react-hot-toast";
 
 export const Chatrooms = () => {
     const {id} = useParams();
-    const disptach = useDispatch<AppDispatch>();
-    const [channelData, setChannelData] = useState<Chatroom | null>(null)
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [initialValues, setInitialValues] = useState<User | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
+    const [channelData, setChannelData] = useState<any | null>(null) // todo: refactor any
+    const navigate = useNavigate()
 
     const getChannelData = async () => {
-        const res = await disptach(getChatroomByIdAction({channelId: Number(id)}))
+        const res = await dispatch(getChatroomByIdAction({channelId: Number(id)}))
         if(res.type === "textChannels/getById/fulfilled"){
             setChannelData(res.payload)
         }
@@ -26,6 +29,23 @@ export const Chatrooms = () => {
             getChannelData()
         }
     }, [id])
+
+    const handleRemoveClick = async () => {
+        if(!id){
+            return
+        }
+
+        try{
+            navigate("/chatrooms")
+            const res = await dispatch(deleteChatroomAction({
+                channelId: Number(id)
+            }))
+            await dispatch(listChatroomsAction());
+            toast.success('Successfully removed the chatroom!')
+        } catch (e) {
+            toast.error("Cannot remove channel")
+        }
+    }
 
 
     if (!id) {
@@ -44,10 +64,10 @@ export const Chatrooms = () => {
             <div className={"m-4 bg-white/5 p-4 rounded-lg"}>
                 <h1 className={"text-3xl mb-2 border-b-2 pb-1 break-all border-gray-700"}># {channelData?.name}</h1>
                 <div className="flex gap-2 justify-end">
-                    <AppButton variant={'red'} onClick={() => { console.log('remove channel')}} >
+                    <AppButton variant={'red'} onClick={() => handleRemoveClick()} >
                         Delete
                     </AppButton>
-                    <AppButton onClick={() => { console.log('remove channel')}} >
+                    <AppButton onClick={() => setIsOpen(true)} >
                         Edit
                     </AppButton>
                 </div>
@@ -56,6 +76,13 @@ export const Chatrooms = () => {
 
             </div>
             <MessageForm />
+            <ChatroomFormModal
+                onSuccess={() => getChannelData()}
+                isEditing={true}
+                initialValues={channelData}
+                closeModal={() => setIsOpen(false)}
+                isOpen={isOpen}
+            />
         </div>
     )
 }

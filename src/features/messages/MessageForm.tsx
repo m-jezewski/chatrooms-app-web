@@ -9,8 +9,6 @@ interface MessageFormValues {
 
 export const MessageForm = () => {
     const handleSubmit = (values: MessageFormValues, formikHelpers: FormikHelpers<MessageFormValues>) => {
-        console.log("Submit form", values);
-
         formikHelpers.resetForm()
     }
 

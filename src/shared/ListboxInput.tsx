@@ -12,21 +12,24 @@ import {User} from "../interfaces.ts";
 
 interface ListboxInputProps {
     name: string
+    disableSelf?: boolean,
 }
 
-export const ListboxInput = ({name}: ListboxInputProps) => {
+export const ListboxInput = ({name, disableSelf = true}: ListboxInputProps) => {
 
     const dispatch = useDispatch<AppDispatch>();
     const users = useSelector(selectUsersList) || []
 
     const updateUsers = async () => await dispatch(listUsersAction())
-    const loggedUser = useSelector(selectLoggedUser)
+    const loggedUser = useSelector(selectLoggedUser)!
 
     useEffect(() => {
         updateUsers()
     }, [])
 
-    console.log(users)
+    const isInputDisabled = () => {
+        return !(loggedUser.role === "ADMIN" && disableSelf === false);
+    }
 
     return (
         <Field name={name}>
@@ -34,7 +37,6 @@ export const ListboxInput = ({name}: ListboxInputProps) => {
                 <Listbox value={field.value} onChange={async (value) => {
                     await form.setFieldTouched(name, true)
                     await form.setFieldValue(name, value)
-                    console.log(value)
                 }} multiple>
                     <ListboxButton
                         className={"p-2 w-full bg-neutral-900 text-gray-300/90 text-sm font-normal rounded text-left"}>
@@ -49,7 +51,7 @@ export const ListboxInput = ({name}: ListboxInputProps) => {
                                 className={"p-2 cursor-pointer flex bg-neutral-900 text-gray-300/90 text-sm font-normal rounded w-72 data-[focus]:bg-slate-800 data-[selected]:bg-slate-900 hover:bg-slate-900 data-[disabled]:bg-gray-950"}
                                 key={user.id}
                                 value={user}
-                                disabled={user.id === loggedUser?.id}
+                                disabled={user.id === loggedUser?.id && isInputDisabled()}
                             >
                                 <UserIcon />
                                 <CheckIcon className="invisible size-5 group-data-[selected]:visible" />
@@ -57,6 +59,7 @@ export const ListboxInput = ({name}: ListboxInputProps) => {
                             </ListboxOption>
                         ))}
                     </ListboxOptions>
+                    {meta.touched && meta.error && <div className="text-xs text-red-300 pl-1 metaError">{meta.error}</div>}
                 </Listbox>
             )}
         </Field>

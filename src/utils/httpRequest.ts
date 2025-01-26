@@ -1,11 +1,10 @@
-import {logoutAction} from "../features/auth/authActions.ts";
+import {AppDispatch} from "../store.ts";
+import {logout} from "../features/auth/authSlice.ts";
 
 export const apiUrl = 'http://localhost:3000';
 
-const handleUnauthorized = (dispatch: any) => {
-    console.log('12345');
-    const test= dispatch(logoutAction());
-    console.log(test);
+const handleUnauthorized = async (dispatch:AppDispatch) => {
+    await dispatch(logout());
 };
 
 interface apiRequestInterface {
@@ -42,7 +41,7 @@ export const apiRequest = async (
     try {
         const response = await fetch(`${apiUrl}${endpoint}`, options);
 
-        if (response.status === 401) {
+        if (response.status === 401 || response.status === 403) {
             handleUnauthorized(dispatch);
         }
 

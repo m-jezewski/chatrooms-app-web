@@ -1,5 +1,6 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {apiRequest} from "../../utils/httpRequest.ts";
+import {RootState} from "../../store.ts";
 
 export const loginAction = createAsyncThunk(
     'auth/login',
@@ -57,7 +58,13 @@ export const statusAction = createAsyncThunk(
 
 export const logoutAction = createAsyncThunk(
     'auth/logout',
-    async (_, {dispatch, rejectWithValue}) => {
+    async (_, {getState, dispatch, rejectWithValue}) => {
+        const { auth } = getState() as RootState
+
+        if(!auth.user ){
+            return rejectWithValue("User is already logged out")
+        }
+
         try {
             return await apiRequest({
                 endpoint: '/auth/logout',

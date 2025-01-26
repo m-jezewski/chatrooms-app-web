@@ -18,7 +18,6 @@ export const Users = () => {
     const users = useSelector(selectUsersList) || bUsers
     const loggedUser = useSelector(selectLoggedUser);
 
-    console.log(users)
 
     const getUsers = async () => {
         const res = await dispatch(listUsersAction())

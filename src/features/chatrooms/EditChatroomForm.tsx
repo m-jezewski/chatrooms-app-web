@@ -1,60 +1,76 @@
 import {Formik, FormikHelpers} from "formik";
-import {array, number, object, string} from "yup";
+import {array, object, string} from "yup";
 import {InputLabel} from "../../shared/InputLabel.tsx";
 import {TextInput} from "../../shared/TextInput.tsx";
-import {AppButton} from "../../shared/AppButton.tsx";
-import React from "react";
 import {ListboxInput} from "../../shared/ListboxInput.tsx";
-import {useDispatch, useSelector} from "react-redux";
-import {selectLoggedUser} from "../auth/authSlice.ts";
-import {AppDispatch} from "../../store.ts";
-import {createChatroomAction, listChatroomsAction} from "./chatroomsActions.ts";
-import toast from "react-hot-toast";
+import {AppButton} from "../../shared/AppButton.tsx";
+import React, {useEffect} from "react";
 import {User} from "../../interfaces.ts";
+import {
+    listChatroomsAction,
+    updateChatroomDataAction
+} from "./chatroomsActions.ts";
+import toast from "react-hot-toast";
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch} from "../../store.ts";
+import {selectUsersList} from "../users/usersSlice.ts";
+import {listUsersAction} from "../users/usersActions.ts";
 
-interface ChatroomFormProps {
+interface EditChatroomFormProps {
+    initialValues: {
+        name: string,
+        id: number,
+        users: { id: number }[],
+    } | null;
     closeModal: () => void;
+    onSuccess?: () => void;
 }
 
-interface ChatroomFormValues {
+interface EditChatroomFormState {
+    users: User[],
     name: string,
-    users: User[]
 }
 
-
-export const ChatroomForm = (
-    {
-        closeModal,
-    }: ChatroomFormProps
-) => {
+export const EditChatroomForm = ({initialValues, closeModal, onSuccess}: EditChatroomFormProps) => {
+    //todo: refactor
     const dispatch = useDispatch<AppDispatch>();
-    const loggedUser = useSelector(selectLoggedUser);
+    const users = useSelector(selectUsersList) || []
 
-    const handleSubmit = async (values: ChatroomFormValues, formikHelpers: FormikHelpers<ChatroomFormValues>
-    ) => {
+    const initialUsers = initialValues ? users.filter(u => initialValues.users.some(user => user.id === u.id)) : []
+    const getUsersList = async () => await dispatch(listUsersAction())
+
+    console.log(initialUsers)
+
+    useEffect(() => {
+        getUsersList()
+    }, [])
+
+    const handleSubmit = async (values: EditChatroomFormState, formikHelpers: FormikHelpers<EditChatroomFormState>) => {
         const {users, name} = values;
         const userIds = users.map(u => u.id)
         try {
-            const res = await dispatch(createChatroomAction({
+            const res = await dispatch(updateChatroomDataAction({
+                name,
                 users: userIds,
-                name: name,
+                id: initialValues!.id
             }))
-            toast.success('Successfully created new chatroom!')
+            toast.success('Successfully edited chatroom!')
             dispatch(listChatroomsAction());
+            onSuccess && onSuccess()
         } catch (error) {
             if (error instanceof Error) {
-                toast.error('Failed to create chatroom. \n ' + error.message);
+                toast.error('Failed to edit chatroom. \n ' + error.message);
             }
         }
-        closeModal()
         formikHelpers.resetForm();
     }
 
     return (
         <Formik
+            enableReinitialize={true}
             initialValues={{
-                name: '',
-                users: [loggedUser!],
+                name: initialValues?.name || '',
+                users: initialUsers || [],
             }}
             validationSchema={object({
                 name: string()
@@ -78,7 +94,7 @@ export const ChatroomForm = (
                         </div>
                         <div>
                             <InputLabel htmlFor={"users"}>Users</InputLabel><br/>
-                            <ListboxInput name={'users'} disableSelf={false} />
+                            <ListboxInput name={'users'} disableSelf={false}/>
                         </div>
                         <div className="flex gap-4 justify-end">
                             <AppButton onClick={() => closeModal()}>Cancel</AppButton>

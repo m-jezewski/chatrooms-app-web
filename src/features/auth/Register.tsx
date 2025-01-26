@@ -37,7 +37,6 @@ export const Register = () => {
         formikHelpers.resetForm();
     }
 
-    console.log(isLoading)
 
     const handleGoToLoginClick = () => {
         navigate("/");
@@ -73,7 +72,6 @@ export const Register = () => {
                         className={"flex flex-col gap-3 w-full mt-2"}
                         onSubmit={(e) => {
                             e.preventDefault();
-                            console.log(formikConfig);
                             formikConfig.submitForm()
                         }}
                     >

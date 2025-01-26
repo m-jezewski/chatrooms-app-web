@@ -7,8 +7,13 @@ interface MessageFormValues {
     message: string;
 }
 
-export const MessageForm = () => {
+interface MessageFormProps {
+    sendMessage: (message: string) => void;
+}
+
+export const MessageForm = ({sendMessage}: MessageFormProps) => {
     const handleSubmit = (values: MessageFormValues, formikHelpers: FormikHelpers<MessageFormValues>) => {
+        sendMessage(values.message)
         formikHelpers.resetForm()
     }
 

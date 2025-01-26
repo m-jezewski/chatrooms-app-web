@@ -2,12 +2,14 @@ import {useNavigate, useParams} from "react-router";
 import React, {useEffect, useState} from "react";
 import {MessageForm} from "../messages/MessageForm.tsx";
 import {AppButton} from "../../shared/AppButton.tsx";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch} from "../../store.ts";
 import {deleteChatroomAction, getChatroomByIdAction, listChatroomsAction} from "./chatroomsActions.ts";
 import {User} from "../../interfaces.ts";
 import {ChatroomFormModal} from "./ChatroomFormModal.tsx";
 import toast from "react-hot-toast";
+import useWebSocket from "../messages/useWebSocket.ts";
+import {selectLoggedUser} from "../auth/authSlice.ts";
 
 export const Chatrooms = () => {
     const {id} = useParams();
@@ -15,7 +17,12 @@ export const Chatrooms = () => {
     const [initialValues, setInitialValues] = useState<User | null>(null);
     const dispatch = useDispatch<AppDispatch>();
     const [channelData, setChannelData] = useState<any | null>(null) // todo: refactor any
+    const loggedUser = useSelector(selectLoggedUser);
+    const messages = useSelector((state: any) => state.messages.messages);
     const navigate = useNavigate()
+
+    const { isConnected, sendMessage, joinChannel, leaveChannel } = useWebSocket();
+
 
     const getChannelData = async () => {
         const res = await dispatch(getChatroomByIdAction({channelId: Number(id)}))
@@ -29,6 +36,27 @@ export const Chatrooms = () => {
             getChannelData()
         }
     }, [id])
+
+    useEffect(() => {
+        if (id && loggedUser?.id) {
+            joinChannel({userId: loggedUser.id, channelId: Number(id)})
+        }
+
+        return () => {
+            leaveChannel({userId: loggedUser!.id, channelId: Number(id)})
+        }
+    }, [isConnected, id, isConnected]);
+
+
+    const handleSendMessage = (message: string) => {
+        sendMessage({ channelId: Number(id), userId: loggedUser!.id, content: message });
+    };
+
+    useEffect(() => {
+        // if (isConnected && id) {
+        //     sendMessage({ channelId: Number(id), userId: loggedUser!.id });
+        // }
+    }, [isConnected, sendMessage]);
 
     const handleRemoveClick = async () => {
         if(!id){
@@ -47,6 +75,8 @@ export const Chatrooms = () => {
         }
     }
 
+
+    console.log(messages)
 
     if (!id) {
         return <div className={"flex justify-center items-center min-h-full text-center"}>
@@ -75,7 +105,7 @@ export const Chatrooms = () => {
             <div className={"grow"}>
 
             </div>
-            <MessageForm />
+            <MessageForm sendMessage={handleSendMessage} />
             <ChatroomFormModal
                 onSuccess={() => getChannelData()}
                 isEditing={true}

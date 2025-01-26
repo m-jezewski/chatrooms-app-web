@@ -1,14 +1,16 @@
-import {string} from "yup";
+import {logoutAction} from "../features/auth/authActions.ts";
 
 export const apiUrl = 'http://localhost:3000';
 
 const handleUnauthorized = (dispatch: any) => {
-    dispatch({type: 'auth/logout'});
+    console.log('12345');
+    const test= dispatch(logoutAction());
+    console.log(test);
 };
 
 interface apiRequestInterface {
     endpoint: string;
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     body?: any
     dispatch: any
 }

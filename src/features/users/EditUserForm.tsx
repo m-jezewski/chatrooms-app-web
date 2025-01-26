@@ -35,6 +35,7 @@ export const EditUserForm = (
 
     const handleSubmit = async (values: UserFormValues, formikHelpers: FormikHelpers<UserFormValues>
     ) => {
+        console.log(values)
         const {email, role, name} = values;
         try {
             const res = await dispatch(updateUserDataAction({
@@ -43,7 +44,7 @@ export const EditUserForm = (
                 role,
                 name,
             }))
-            toast.success('Successfully created new user!')
+            toast.success('Successfully edited user!')
             dispatch(listUsersAction());
         } catch (error) {
             if (error instanceof Error) {
@@ -54,6 +55,8 @@ export const EditUserForm = (
         closeModal()
     }
 
+    console.log(initialValues)
+
     return (
         <Formik
             enableReinitialize={true}
@@ -63,10 +66,19 @@ export const EditUserForm = (
                 role: initialValues.role || 'USER',
             }}
             validationSchema={object({
+                email: string()
+                    .email()
+                    .required(),
+                password: string()
+                    .required()
+                    .min(5)
+                    .max(50),
                 name: string()
                     .required()
-                    .min(3).max(50),
-                users: array().min(1)
+                    .min(3)
+                    .max(75),
+                role: string().required(),
+
             })}
             onSubmit={handleSubmit}
         >
@@ -89,10 +101,10 @@ export const EditUserForm = (
                         <div className="flex flex-col">
                             <InputLabel htmlFor={"role"}>Role</InputLabel>
                             <div className={"mt-1"}>
-                                <Field name={'role'}>{({field}: FieldProps) => <input type={'radio'} {...field} value={'USER'}/>}</Field> User
+                                <Field name={'role'}>{({field}: FieldProps) => <input type={'radio'} {...field} value={'USER'} checked={field.value === 'USER'}/>}</Field> User
                             </div>
                             <div>
-                                <Field name={'role'}>{({field}: FieldProps) => <input type={'radio'} {...field} value={'ADMIN'}/>}</Field> Admin
+                                <Field name={'role'}>{({field}: FieldProps) => <input type={'radio'} {...field} value={'ADMIN'} checked={field.value === 'ADMIN'}/>}</Field> Admin
                             </div>
                         </div>
                         <div className="flex gap-4 justify-end">
@@ -100,7 +112,7 @@ export const EditUserForm = (
                                 formikConfig.resetForm()
                                 closeModal()
                             }}>Cancel</AppButton>
-                            <AppButton type={'submit'}>Add</AppButton>
+                            <AppButton type={'submit'} variant={'slate'}>Edit User</AppButton>
                         </div>
                     </form>
                 </div>

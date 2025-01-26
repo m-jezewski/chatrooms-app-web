@@ -7,6 +7,7 @@ import {AppButton} from "../../shared/AppButton.tsx";
 import {User} from "../../interfaces.ts";
 import toast from "react-hot-toast";
 import {UserFormModal} from "./UserFormModal.tsx";
+import {selectLoggedUser} from "../auth/authSlice.ts";
 
 export const Users = () => {
     const [initialValues, setInitialValues] = useState<User | null>(null);
@@ -15,6 +16,7 @@ export const Users = () => {
     const dispatch = useDispatch<AppDispatch>();
     const [bUsers, setbUsers] = useState<User[]>([]); // todo: refactor later
     const users = useSelector(selectUsersList) || bUsers
+    const loggedUser = useSelector(selectLoggedUser);
 
     console.log(users)
 
@@ -78,7 +80,7 @@ export const Users = () => {
                         <td>
                             <div className={'flex gap-2'}>
                                 <AppButton onClick={() => handleOpenEditUserForm(user)} variant={'slate'}>Edit</AppButton>
-                                <AppButton onClick={() => handleDeleteUser(user.id)} variant={'red'}>Delete</AppButton>
+                                <AppButton disabled={user.id === loggedUser?.id} onClick={() => handleDeleteUser(user.id)} variant={'red'}>Delete</AppButton>
                             </div>
                         </td>
                     </tr>

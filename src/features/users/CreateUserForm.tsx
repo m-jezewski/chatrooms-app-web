@@ -60,10 +60,18 @@ export const CreateUserForm = (
                 role: 'USER',
             }}
             validationSchema={object({
+                email: string()
+                    .email()
+                    .required(),
+                password: string()
+                    .required()
+                    .min(5)
+                    .max(50),
                 name: string()
                     .required()
-                    .min(3).max(50),
-                users: array().min(1)
+                    .min(3)
+                    .max(75),
+                role: string().required(),
             })}
             onSubmit={handleSubmit}
         >

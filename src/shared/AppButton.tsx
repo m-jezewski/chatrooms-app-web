@@ -30,9 +30,11 @@ export const AppButton = (
 
     const roundedClass = rounded ? "rounded-full aspect-square" : "rounded"
 
+    const disabledClass = otherProps.disabled ? "opacity-50" : ""
+
     return (
         <button {...otherProps}
-                className={[colors[variant], roundedClass, "p-2 text-gray-300/90 text-sm font-normal", className].join(" ")}>
+                className={[colors[variant], roundedClass, disabledClass, "p-2 text-gray-300/90 text-sm font-normal", className].join(" ")}>
             {loader ? <Loader /> : children}
         </button>
     )

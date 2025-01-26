@@ -5,7 +5,8 @@ interface AppButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     className?: string;
     children?: ReactNode;
     loader?: boolean;
-    variant?: 'neutral' | 'slate';
+    variant?: 'neutral' | 'slate' | 'purple' | 'transparent' | 'red'
+    rounded?: boolean
 }
 
 export const AppButton = (
@@ -14,6 +15,7 @@ export const AppButton = (
         className,
         loader = false,
         children,
+        rounded = false,
         ...otherProps
     }: AppButtonProps
 ) => {
@@ -21,11 +23,16 @@ export const AppButton = (
     const colors = {
         neutral: "bg-neutral-900",
         slate: "bg-slate-900",
+        purple: "bg-purple-900",
+        transparent: "bg-transparent",
+        red: 'bg-rose-900'
     }
+
+    const roundedClass = rounded ? "rounded-full aspect-square" : "rounded"
 
     return (
         <button {...otherProps}
-                className={[colors[variant], "p-2 rounded text-gray-300/90 text-sm font-normal", className].join(" ")}>
+                className={[colors[variant], roundedClass, "p-2 text-gray-300/90 text-sm font-normal", className].join(" ")}>
             {loader ? <Loader /> : children}
         </button>
     )

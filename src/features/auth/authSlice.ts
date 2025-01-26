@@ -1,9 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {LoggedUser} from "../../interfaces.ts";
-import {loginAction, registerAction, statusAction} from "./authActions.ts";
+import {User} from "../../interfaces.ts";
+import {loginAction, logoutAction, registerAction, statusAction} from "./authActions.ts";
 
 interface AuthState {
-    user: LoggedUser | null;
+    user: User | null;
     isLoading: boolean;
     error: string | null;
 }
@@ -18,18 +18,28 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        logout: (state) => {
-            state.user = null;
-            state.error = null;
-            state.isLoading = false;
-        },
+
     },
     extraReducers: (builder) => {
         builder
+            .addCase(logoutAction.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(logoutAction.fulfilled, (state, action: PayloadAction<any>) => {
+                state.isLoading = false;
+                state.user = null;
+                state.error = null;
+            })
+            .addCase(logoutAction.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            });
+        builder
             .addCase(statusAction.pending, (state) => {
-            state.isLoading = true;
-            state.error = null;
-        })
+                state.isLoading = true;
+                state.error = null;
+            })
             .addCase(statusAction.fulfilled, (state, action: PayloadAction<any>) => {
                 console.log(action)
                 state.isLoading = false;
@@ -46,7 +56,6 @@ const authSlice = createSlice({
                 state.error = null;
             })
             .addCase(loginAction.fulfilled, (state, action: PayloadAction<any>) => {
-                console.log(action)
                 state.isLoading = false;
                 state.user = action.payload;
                 state.error = null;
@@ -62,7 +71,6 @@ const authSlice = createSlice({
             })
             .addCase(registerAction.fulfilled, (state, action: PayloadAction<any>) => {
                 state.isLoading = false;
-                console.log(action)
                 state.user = action.payload;
                 state.error = null;
             })

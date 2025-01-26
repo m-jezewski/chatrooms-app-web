@@ -27,8 +27,10 @@ export const Register = () => {
     const handleSubmit = async (values: formValues, formikHelpers: FormikHelpers<formValues>) => {
         try {
             const res = await dispatch(registerAction(values))
-            console.log(res)
-            toast.success('Successfully registered!')
+            if(res.payload){
+                navigate("/chatrooms")
+                toast.success('Successfully registered!')
+            }
         } catch (error) {
             toast.error('Failed to register.')
         }

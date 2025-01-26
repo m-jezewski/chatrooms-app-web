@@ -23,7 +23,10 @@ export const Login = () => {
 
     const handleSubmit = async (values: formValues, formikHelpers: FormikHelpers<formValues>) => {
         try {
-            const data = await dispatch(loginAction(values))
+            const res = await dispatch(loginAction(values))
+            if(res.payload){
+                navigate("/chatrooms")
+            }
         } catch (error) {
             toast.error('Failed to log in.')
         }
@@ -36,14 +39,14 @@ export const Login = () => {
 
     const handleDemoButtonClick = async (formikConfig: FormikProps<formValues>) => {
         await formikConfig.setValues({
-            email: 'publicuser@chatrooms.com',
-            password: "public_password",
+            email: 'public_user@chatrooms.com',
+            password: "public_user_password",
         }, true)
     }
 
     return (
         <div
-            className="rounded-lg min-w-80 flex flex-col justify-center align-middle frounded-lg bg-gradient-to-tr from-fuchsia-950 from-10% via-pink-900 to-rose-900 to-90% p-5 shadow-rose-700/50 shadow-sm">
+            className="rounded-lg min-w-80 flex flex-col justify-center align-middle frounded-lg bg-gradient-to-tr from-fuchsia-950 from-10% via-pink-900 to-rose-900 to-90% shadow-rose-700/50 shadow-sm p-5">
             <h1 className="font-medium text-xl text-center">Sign in</h1>
             <Formik
                 initialValues={{

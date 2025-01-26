@@ -54,3 +54,20 @@ export const statusAction = createAsyncThunk(
         }
     }
 )
+
+export const logoutAction = createAsyncThunk(
+    'auth/logout',
+    async (_, {dispatch, rejectWithValue}) => {
+        try {
+            return await apiRequest({
+                endpoint: '/auth/logout',
+                method: 'DELETE',
+                dispatch: dispatch,
+            });
+        } catch (error) {
+            let message = 'Unknown Error'
+            if (error instanceof Error) message = error.message
+            return rejectWithValue(message);
+        }
+    }
+)

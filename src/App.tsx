@@ -29,7 +29,6 @@ function App() {
         checkUserStatus()
     }, [])
 
-    useWebSocket()
 
     const user = useSelector(selectLoggedUser)
 

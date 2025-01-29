@@ -18,7 +18,7 @@ export const LoggedUserLayout = () => {
     return (
         <div
             className={"flex flex-row items-stretch h-screen w-screen bg-gradient-to-tr from-slate-900 to-neutral-900 relative"}>
-            <div className={"basis-1/5 max-w-72 overflow-y-auto from-slate-900 to-neutral-900 flex flex-col p-3"}>
+            <div className={"basis-1/5 max-w-72 min-w-52 overflow-y-auto from-slate-900 to-neutral-900 flex flex-col p-3"}>
                 <Link to={'/chatrooms'}><h2
                     className={"text-left text-white landingLogo text-2xl select-none p-4 border-b-2 border-purple-950 w-full"}>Chatrooms</h2>
                 </Link>

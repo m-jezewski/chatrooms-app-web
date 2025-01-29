@@ -13,6 +13,7 @@ import {Loader} from "./shared/Loader.tsx";
 import {LoggedUserLayout} from "./shared/LoggedUserLayout.tsx";
 import {Chatrooms} from "./features/chatrooms/Chatrooms.tsx";
 import {Users} from "./features/users/Users.tsx";
+import useWebSocket from "./features/messages/useWebSocket.ts";
 
 function App() {
     const [appLoader, setAppLoader] = useState(true)
@@ -27,6 +28,8 @@ function App() {
     useEffect(() => {
         checkUserStatus()
     }, [])
+
+    useWebSocket()
 
     const user = useSelector(selectLoggedUser)
 

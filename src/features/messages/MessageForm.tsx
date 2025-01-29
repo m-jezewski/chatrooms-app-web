@@ -26,7 +26,7 @@ export const MessageForm = ({sendMessage}: MessageFormProps) => {
         >
             {formikConfig => {
                 return (
-                    <form onSubmit={(e) => {
+                    <form className={"mt-auto"} onSubmit={(e) => {
                         e.preventDefault();
                         formikConfig.submitForm();
                     }}>

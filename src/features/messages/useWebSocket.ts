@@ -3,17 +3,17 @@ import {
     connectionOpened,
     connectionClosed,
     receivedMessage,
-    connectionError,
+    connectionError, setMessages,
 } from './messagesSlice.ts';
 import io from 'socket.io-client';
-
-import { createContext } from 'react'
 
 
 const useWebSocket = () => {
     const dispatch = useDispatch();
-    const socket = io('http://localhost:3001', {
+    const socket = io('ws://localhost:3001/', {
         withCredentials: true,
+        secure: true,
+        port: 3001
     });
 
     const isConnected = useSelector((state: any) => state.messages.isConnected);
@@ -23,7 +23,10 @@ const useWebSocket = () => {
         dispatch(receivedMessage(message));
     });
 
-    socket.on('userJoined', (data) => {
+    socket.on('joinedChannel', (data) => {
+        console.log('User joined:', data);
+
+        dispatch(setMessages(data.messages));
     });
 
 

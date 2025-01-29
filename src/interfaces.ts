@@ -12,3 +12,12 @@ export interface Chatroom {
     createdAt: Date;
     users: number[];
 }
+
+export interface Message {
+    id: number;
+    author: { name: string }
+    content: string;
+    createdAt: Date;
+    textChannelId: number;
+    authorId: number;
+}

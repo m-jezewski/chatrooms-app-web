@@ -23,8 +23,11 @@ const messagesSlice = createSlice({
         connectionClosed(state) {
             state.isConnected = false;
         },
+        setMessages(state, action: PayloadAction<any>) {
+            state.messages = action.payload;
+        },
         sendMessage(state, action: PayloadAction<any>) {
-            state.messages.push(action.payload);
+            // state.messages.push(action.payload);
         },
         receivedMessage(state, action: PayloadAction<any>) {
             state.messages.push(action.payload);
@@ -35,7 +38,7 @@ const messagesSlice = createSlice({
     },
 });
 
-export const { connectionOpened, connectionClosed, receivedMessage, connectionError } =
+export const { connectionOpened, connectionClosed, receivedMessage, connectionError, setMessages } =
     messagesSlice.actions;
 
 export default messagesSlice.reducer;

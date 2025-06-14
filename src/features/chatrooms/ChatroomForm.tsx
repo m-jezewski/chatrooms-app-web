@@ -66,7 +66,7 @@ export const ChatroomForm = (
         >
             {(formikConfig) => (<div className={"flex flex-col gap-3 w-full mt-2"}>
                     <form
-                        className={"w-full flex flex-col gap-3 min-w-80 bg-black/20 p-4 rounded"}
+                        className={"w-full flex flex-col gap-3 min-w-80 bg-black/5 p-4 rounded"}
                         onSubmit={(e) => {
                             e.preventDefault();
                             formikConfig.submitForm();

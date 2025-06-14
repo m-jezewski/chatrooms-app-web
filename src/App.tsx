@@ -13,7 +13,6 @@ import {Loader} from "./shared/Loader.tsx";
 import {LoggedUserLayout} from "./shared/LoggedUserLayout.tsx";
 import {Chatrooms} from "./features/chatrooms/Chatrooms.tsx";
 import {Users} from "./features/users/Users.tsx";
-import useWebSocket from "./features/messages/useWebSocket.ts";
 
 function App() {
     const [appLoader, setAppLoader] = useState(true)
@@ -33,7 +32,11 @@ function App() {
     const user = useSelector(selectLoggedUser)
 
     if (appLoader) {
-        return <Loader variant={'large'}/>
+        return (
+            <div className={"flex items-center justify-center w-screen min-h-screen mx-auto bg-blue-950"}>
+                <Loader variant={'large'}/>
+            </div>
+        )
     }
 
     return (
@@ -54,7 +57,7 @@ function App() {
                 <Route path={"*"} element={<Navigate to="/"/>} />
             </Routes>
         </>
-)
+    )
 }
 
 export default App

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
     connectionOpened,
     connectionClosed,
@@ -16,8 +16,6 @@ const useWebSocket = () => {
         port: 3001
     });
 
-    const isConnected = useSelector((state: any) => state.messages.isConnected);
-
     socket.on('newMessage', (message) => {
         console.log('New message:', message);
         dispatch(receivedMessage(message));
@@ -30,20 +28,25 @@ const useWebSocket = () => {
     });
 
 
-    const joinChannel = ({userId, channelId}: { userId: number, channelId: number }) => {
-        socket.emit('joinChannel', { userId, channelId });
+    const joinChannel = ({channelId}: { channelId: number }) => {
+        socket.emit('joinChannel', {channelId});
         dispatch(connectionOpened())
     };
 
-    const sendMessage = ({userId, content, channelId}: {userId: number, content: string, channelId: number}) => {
-        socket.emit('sendMessage', { userId, content, channelId });
+    const sendMessage = ({content, channelId}: { content: string, channelId: number }) => {
+        socket.emit('sendMessage', {content, channelId});
     };
 
-    const leaveChannel = ({userId, channelId}: {userId: number, channelId: number}) => {
-        socket.emit('leaveChannel', { userId, channelId });
+    const leaveChannel = ({channelId}: { channelId: number }) => {
+        socket.emit('leaveChannel', {channelId});
     };
 
-    return { isConnected, sendMessage, joinChannel, leaveChannel };
+    return {
+        isConnected: socket.connected,
+        sendMessage,
+        joinChannel,
+        leaveChannel
+    };
 };
 
 

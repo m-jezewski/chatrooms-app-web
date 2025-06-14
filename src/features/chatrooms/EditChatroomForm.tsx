@@ -39,7 +39,6 @@ export const EditChatroomForm = ({initialValues, closeModal, onSuccess}: EditCha
     const initialUsers = initialValues ? users.filter(u => initialValues.users.some(user => user.id === u.id)) : []
     const getUsersList = async () => await dispatch(listUsersAction())
 
-    console.log(initialUsers)
 
     useEffect(() => {
         getUsersList()
@@ -82,7 +81,7 @@ export const EditChatroomForm = ({initialValues, closeModal, onSuccess}: EditCha
         >
             {(formikConfig) => (<div className={"flex flex-col gap-3 w-full mt-2"}>
                     <form
-                        className={"w-full flex flex-col gap-3 min-w-80 bg-black/20 p-4 rounded"}
+                        className={"w-full flex flex-col gap-3 min-w-80 bg-black/5 p-4 rounded"}
                         onSubmit={(e) => {
                             e.preventDefault();
                             formikConfig.submitForm();
@@ -98,7 +97,7 @@ export const EditChatroomForm = ({initialValues, closeModal, onSuccess}: EditCha
                         </div>
                         <div className="flex gap-4 justify-end">
                             <AppButton onClick={() => closeModal()}>Cancel</AppButton>
-                            <AppButton type={'submit'}>Add</AppButton>
+                            <AppButton type={'submit'}>Edit</AppButton>
                         </div>
                     </form>
                 </div>
